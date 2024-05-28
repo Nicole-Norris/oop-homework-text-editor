@@ -50,8 +50,14 @@ void MainWindow::openFile()
 }
 
 void MainWindow::save() {
-    QString selectedFilter{"Text Documents (*.txt)"};
-    QString fileName = QFileDialog::getSaveFileName(this, "儲存檔案", "", "All File (*.*);;Text Documents (*.txt)", &selectedFilter);
+    QString fileName;
+    if (this->statusLabel->text() == "") {
+        QString selectedFilter{"Text Documents (*.txt)"};
+        fileName = QFileDialog::getSaveFileName(this, "儲存檔案", "", "All File (*.*);;Text Documents (*.txt)", &selectedFilter);
+    }
+    else {
+        fileName = this->statusLabel->text();
+    }
     QFile file(fileName);
     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         QTextStream out(&file);
