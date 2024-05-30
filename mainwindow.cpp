@@ -28,14 +28,17 @@ void MainWindow::setupMenu() {
   QAction* openNewAction = new QAction("開啟新檔");
   QAction* openAction = new QAction("開啟舊檔");
   QAction* saveAction = new QAction("存檔");
+  QAction* saveAsAction = new QAction("另存新檔");
   QAction* saveAndCloseAction = new QAction("存檔並關閉");
   fileMenu->addAction(openNewAction);
   fileMenu->addAction(openAction);
   fileMenu->addAction(saveAction);
+  fileMenu->addAction(saveAsAction);
   fileMenu->addAction(saveAndCloseAction);
   connect(openAction, &QAction::triggered, this, &MainWindow::openFile);
   connect(openNewAction, &QAction::triggered, this, &MainWindow::save);
   connect(saveAction, &QAction::triggered, this, &MainWindow::save);
+  connect(saveAsAction, &QAction::triggered, this, &MainWindow::saveAs);
   connect(saveAndCloseAction, &QAction::triggered, this,
           &MainWindow::saveAndClose);
 }
@@ -90,6 +93,11 @@ void MainWindow::openFile() {
   setFilePath(fileName);
   QString fileContents = readFileContents(fileName);
   this->textEditor->setPlainText(fileContents);
+}
+
+void MainWindow::saveAs() {
+    setFilePath("");
+    save();
 }
 
 void MainWindow::save() {

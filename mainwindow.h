@@ -33,6 +33,7 @@ class MainWindow : public QMainWindow {
   void exitApp();
   void openFile();
   void save();
+  void saveAs();
   void saveAndClose();
 };
 #endif  // MAINWINDOW_H
