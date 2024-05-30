@@ -1,25 +1,38 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include <QStatusBar>
-#include <QPlainTextEdit>
 #include <QLabel>
+#include <QMainWindow>
+#include <QPlainTextEdit>
+#include <QStatusBar>
 
-class MainWindow : public QMainWindow
-{
-    Q_OBJECT
+class MainWindow : public QMainWindow {
+  Q_OBJECT
 
-public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+ public:
+  MainWindow(QWidget *parent = nullptr);
+  ~MainWindow();
 
-private:
-    void exitApp();
-    void openFile();
-    void save();
-    QLabel *statusLabel;
-    QStatusBar *statusBar;
-    QPlainTextEdit *textEditor;
+ private:
+  QLabel *statusLabel;
+  QStatusBar *statusBar;
+  QPlainTextEdit *textEditor;
+  QMenuBar *menuBar;
+
+  enum FileOpType { SAVE, OPEN };
+
+  void createWidgets();
+  void setupMenu();
+
+  QString getFileName(QString propose, FileOpType);
+  QString getSaveFileName();
+  QString getFilePath();
+  QString readFileContents(QString fileName);
+  void setFilePath(QString filePath);
+
+  void exitApp();
+  void openFile();
+  void save();
+  void saveAndClose();
 };
-#endif // MAINWINDOW_H
+#endif  // MAINWINDOW_H
