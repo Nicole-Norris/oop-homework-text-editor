@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 
 #include <QFileDialog>
-#include <QMenu>
 #include <QMenuBar>
 #include <QPlainTextEdit>
 
@@ -25,22 +24,30 @@ void MainWindow::createWidgets() {
 
 void MainWindow::setupMenu() {
   QMenu* fileMenu = menuBar->addMenu("檔案");
-  QAction* openNewAction = new QAction("開啟新檔");
-  QAction* openAction = new QAction("開啟舊檔");
-  QAction* saveAction = new QAction("存檔");
-  QAction* saveAsAction = new QAction("另存新檔");
-  QAction* saveAndCloseAction = new QAction("存檔並關閉");
-  fileMenu->addAction(openNewAction);
-  fileMenu->addAction(openAction);
-  fileMenu->addAction(saveAction);
-  fileMenu->addAction(saveAsAction);
-  fileMenu->addAction(saveAndCloseAction);
-  connect(openAction, &QAction::triggered, this, &MainWindow::openFile);
-  connect(openNewAction, &QAction::triggered, this, &MainWindow::save);
-  connect(saveAction, &QAction::triggered, this, &MainWindow::save);
-  connect(saveAsAction, &QAction::triggered, this, &MainWindow::saveAs);
-  connect(saveAndCloseAction, &QAction::triggered, this,
-          &MainWindow::saveAndClose);
+  ActionParam openNewAction{"開啟新檔", QKeySequence(Qt::CTRL | Qt::Key_N),
+                            &MainWindow::save};
+  ActionParam openAction{"開啟舊檔", QKeySequence(Qt::CTRL | Qt::Key_O),
+                         &MainWindow::openFile};
+  ActionParam saveAction{"存檔", QKeySequence(Qt::CTRL | Qt::Key_S),
+                         &MainWindow::save};
+  ActionParam saveAsAction{"另存新檔",
+                           QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_S),
+                           &MainWindow::saveAs};
+  ActionParam saveCloseAction{"存檔並關閉",
+                              QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_S),
+                              &MainWindow::saveAndClose};
+  setupAction(openNewAction, fileMenu);
+  setupAction(openAction, fileMenu);
+  setupAction(saveAction, fileMenu);
+  setupAction(saveAsAction, fileMenu);
+  setupAction(saveCloseAction, fileMenu);
+}
+
+void MainWindow::setupAction(ActionParam actionParam, QMenu* targetMenu) {
+  QAction* action = new QAction(actionParam.actionName);
+  targetMenu->addAction(action);
+  action->setShortcut(actionParam.shortcut);
+  connect(action, &QAction::triggered, this, actionParam.slot);
 }
 
 QString MainWindow::getFileName(QString propose, FileOpType type) {
@@ -96,8 +103,8 @@ void MainWindow::openFile() {
 }
 
 void MainWindow::saveAs() {
-    setFilePath("");
-    save();
+  setFilePath("");
+  save();
 }
 
 void MainWindow::save() {

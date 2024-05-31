@@ -3,6 +3,7 @@
 
 #include <QLabel>
 #include <QMainWindow>
+#include <QMenu>
 #include <QPlainTextEdit>
 #include <QStatusBar>
 
@@ -20,9 +21,16 @@ class MainWindow : public QMainWindow {
   QMenuBar *menuBar;
 
   enum FileOpType { SAVE, OPEN };
+  struct ActionParam {
+    QString actionName;
+    QKeySequence shortcut;
+    void (MainWindow::*slot)();
+  };
 
   void createWidgets();
   void setupMenu();
+
+  void setupAction(ActionParam actionParam, QMenu *targetMenu);
 
   QString getFileName(QString propose, FileOpType);
   QString getSaveFileName();
